@@ -181,6 +181,46 @@ public class MathLib {
 
 		combineUntil(arr, n, r, 0, data, 0);
 	}
+	
+
+
+	/** from GfG
+     * permutation function 
+     * @param str string to calculate permutation for 
+     * @param l starting index 
+     * @param r end index 
+	 * @return list of permutations of str
+     */
+	private static List<String> permute(String str, int l, int r,List<String> perms) {
+		if (l == r) {
+//			System.out.println(str);
+			perms.add(str);
+			
+		} else {
+			for (int i = l; i <= r; i++) {
+				str = swap(str, l, i);
+				/*perms=*/permute(str, l + 1, r,perms);
+				str = swap(str, l, i);
+			}
+		}
+		return perms;
+	}
+  
+    /** from GfG
+     * Swap Characters at position 
+     * @param a string value 
+     * @param i position 1 
+     * @param j position 2 
+     * @return swapped string 
+     */
+	public static String swap(String a, int i, int j) {
+		char temp;
+		char[] charArray = a.toCharArray();
+		temp = charArray[i];
+		charArray[i] = charArray[j];
+		charArray[j] = temp;
+		return String.valueOf(charArray);
+	}
 
 	private static void printList(List<int[]> list) {
 		for (int i = 0; i < list.size(); i++) {
