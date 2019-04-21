@@ -24,7 +24,7 @@ public class MathLib {
 		  } List<int[]> pascalsT = pascalsT(n); printList(pascalsT);
 		  System.out.println("--------------------");
 		  System.out.println("Size is " + pascalsT.size());
-		 -
+		 
 		int[][] matrix = new int[3][];
 		matrix[0] = new int[] { 5, 4, 1 };
 		matrix[1] = new int[] { 2, 6, 3 };
