@@ -14,36 +14,36 @@ public class MathLib {
 
 	public static void main(String[] args) {
 		
-//		  int[] ar = new int[] { 1, 3, 5, 7, 9, 2, 4, 6, 8, 10 }; int r = 5;
-//		  int n = ar.length; // printCombinations(ar,n,r);
-//		  printListArr(combine(ar, r));
-//		  
-//		  System.out.println(nCk(n, r));
-//		  
-//		  for (int i = 1; i <= n; i++) { System.out.print(fibonacci(i) + " ");
-//		  } List<int[]> pascalsT = pascalsT(n); printList(pascalsT);
-//		  System.out.println("--------------------");
-//		  System.out.println("Size is " + pascalsT.size());
-		 //-
-//		int[][] matrix = new int[3][];
-//		matrix[0] = new int[] { 5, 4, 1 };
-//		matrix[1] = new int[] { 2, 6, 3 };
-//		matrix[2] = new int[] { 9, 7, 8 };
-//
-//		System.out.println(dotProductSelf(matrix)); // 5*5+6*6+8*8=25+36+64=125
-//
-//		printMatrix(crossproductSelf(matrix));
-//
-//		int[][] m1 = new int[2][];
-//		m1[0] = new int[] { 1, 2, 3 };
-//		m1[1] = new int[] { 4, 5, 6 };
-//
-//		int[][] m2 = new int[3][];
-//		m2[0] = new int[] { 7, 8 };
-//		m2[1] = new int[] { 9, 10 };
-//		m2[2] = new int[] { 11, 12 };			//[58 64][139 154]
-//
-//		printMatrix(matrixMultiply(m1, m2));
+		  int[] ar = new int[] { 1, 3, 5, 7, 9, 2, 4, 6, 8, 10 }; int r = 5;
+		  int n = ar.length; // printCombinations(ar,n,r);
+		  printListArr(combine(ar, r));
+		  
+		  System.out.println(nCk(n, r));
+		  
+		  for (int i = 1; i <= n; i++) { System.out.print(fibonacci(i) + " ");
+		  } List<int[]> pascalsT = pascalsT(n); printList(pascalsT);
+		  System.out.println("--------------------");
+		  System.out.println("Size is " + pascalsT.size());
+		 -
+		int[][] matrix = new int[3][];
+		matrix[0] = new int[] { 5, 4, 1 };
+		matrix[1] = new int[] { 2, 6, 3 };
+		matrix[2] = new int[] { 9, 7, 8 };
+
+		System.out.println(dotProductSelf(matrix)); // 5*5+6*6+8*8=25+36+64=125
+
+		printMatrix(crossproductSelf(matrix));
+
+		int[][] m1 = new int[2][];
+		m1[0] = new int[] { 1, 2, 3 };
+		m1[1] = new int[] { 4, 5, 6 };
+
+		int[][] m2 = new int[3][];
+		m2[0] = new int[] { 7, 8 };
+		m2[1] = new int[] { 9, 10 };
+		m2[2] = new int[] { 11, 12 };			//[58 64][139 154]
+
+		printMatrix(matrixMultiply(m1, m2));
 		
 		int[][] idem1 = new int[3][];
 		idem1[0] = new int[]{1,0,0};
