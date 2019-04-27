@@ -35,13 +35,13 @@ public class MathLib {
 		printMatrix(crossproductSelf(matrix));
 
 		int[][] m1 = new int[2][];
-		m1[0] = new int[] { 1, 2, 3 };
-		m1[1] = new int[] { 4, 5, 6 };
+		m1[0] = new int[] { 2, 3, 4 };	//{ 1, 2, 3 };
+		m1[1] = new int[] { 1, 0, 0};	//{ 4, 5, 6 };
 
 		int[][] m2 = new int[3][];
-		m2[0] = new int[] { 7, 8 };
-		m2[1] = new int[] { 9, 10 };
-		m2[2] = new int[] { 11, 12 };			//[58 64][139 154]
+		m2[0] = new int[] { 0, 1000};	//{ 7, 8 };
+		m2[1] = new int[] { 1, 100 };	//{ 9, 10 };
+		m2[2] = new int[] { 0, 10 };	//{ 11, 12 };		//[3 2340] [0 1000]	//[58 64][139 154]
 
 		printMatrix(matrixMultiply(m1, m2));
 		
@@ -51,8 +51,33 @@ public class MathLib {
 		idem1[2] = new int[]{0,0,1};
 		printMatrix(idem1);
 		System.out.println("idem1 is Idempotent  "+ isIdempotent(idem1));
+		
+		int[][] mt = new int[2][3];
+		mt[0] = new int[] { 1, 2, 3 };
+		mt[1] = new int[] { 0, -6, 7 };
+		
+		int[][] mtT = matrixTranspose(mt);
+		System.out.println("Matrix");
+		printMatrix(mt);
+		System.out.println("Transposed");
+		printMatrix(mtT);
 	}
 	
+	private static int[][] matrixTranspose(int[][] matrix) {
+		final int numCols = matrix[0].length;
+		final int numRows = matrix.length;
+		if (matrix == null || numRows == 0 || numCols == 0) {
+			return null;
+		}
+		int[][] trans = new int[numCols][numRows];
+		for (int row = 0; row < numCols; row++) {
+			for (int col = 0; col < numRows; col++) {
+				trans[row][col] = matrix[col][row];
+			}
+		}
+		return trans;
+	}
+
 	public static boolean isIdempotent(int[][] matrix) {
 		boolean idempotent = false;
 		if (isSquare(matrix)) {
@@ -76,21 +101,21 @@ public class MathLib {
 	}
 
 	public static int[][] matrixMultiply(final int[][] m1, final int[][] m2) {
-		// num rows in m1 must equal num cols in m2
-		if (m1 == null || m2 == null || m1.length == 0 || m2.length == 0 || m1.length != m2[0].length) {
+		// num cols in m1 must equal num rows in m2
+		if (m1 == null || m2 == null || m1.length == 0 || m2.length == 0 || m1[0].length != m2.length) {
 			return null;
 		}
-		int numRow = m1.length;
-		for (int i = 0; i < m2.length; i++) {
-			if (m2[i].length != numRow) {
-				return null;
-			}
-		}
-		int numCol = numRow;
-		int[][] result = new int[numRow][numCol];
+		int num1Row = m1.length;		
+		int num2Col = m2[0].length;
 
-		for (int row = 0; row < numRow; row++) {
-			for (int col = 0; col < numCol; col++) {
+		if (!(isRectangular(m1) || isRectangular(m2))) {
+			return null;
+		}
+
+		int[][] result = new int[num1Row][num2Col];
+
+		for (int row = 0; row < num1Row; row++) {
+			for (int col = 0; col < num2Col; col++) {
 				result[row][col] = doCross(m1, m2, row, col);
 			}
 		}
@@ -98,6 +123,7 @@ public class MathLib {
 		return result;
 	}
 
+	
 	private static int doCross(int[][] m1, int[][] m2, int i, int j) {
 		int[] row = m1[i];
 
@@ -159,6 +185,21 @@ public class MathLib {
 			}
 		}
 		return result;
+	}
+
+	private static boolean isRectangular(int[][] matrix) {
+		if (matrix == null || matrix.length == 0) {
+			return false;
+		}
+		boolean isRectangular = true;
+		int numCols = matrix[0].length;
+		int numRows = matrix.length;
+		for(int row=0; row<numRows;row++){
+			if(matrix[row].length!=numCols){
+				return false;
+			}
+		}
+		return isRectangular;
 	}
 
 	private static boolean isSquare(final int[][] aMatrix) {
@@ -448,7 +489,7 @@ public class MathLib {
 	private static void printMatrix(final int[][] is) {
 //		System.out.println("\n [" + is[0].length + "] is\n");
 //		System.out.println("______________________________________");
-		for (int row = 0; row < is[0].length; row++) {
+		for (int row = 0; row < is/*[0]*/.length; row++) {
 			printArray(is[row]);
 //			System.out.println("______________________________________");
 		}
