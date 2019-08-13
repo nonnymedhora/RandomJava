@@ -12,7 +12,7 @@ public class PrimeNumber {
 	public PrimeNumber() {
 	}
 
-	private boolean isPrimeNumber(final int number) {
+	private boolean isPrimeNumber(final long number) {
 		boolean isPrime = true;
 
 		if (number < 0)
@@ -49,6 +49,8 @@ public class PrimeNumber {
 		PrimeNumber pn = new PrimeNumber();
 
 		pn.printPrimeNumbersTill(100);
+		
+		System.out.println(pn.isPrimeNumber(300425737531l));
 
 	}
 
