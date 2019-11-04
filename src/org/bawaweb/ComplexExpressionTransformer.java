@@ -296,14 +296,24 @@ public class ComplexExpressionTransformer {
 	//////////////////////////////	
 		
 		FunctionEvaluator funcEval = cxT.evaluator();
-		String funx =  "sin(2.3*z-7.1) - cos(7.1*z-2.3)";
-		String val = "1.5 + 0.7i";
+		String funcZ =  "sin(2.3*z-7.1) - cos(7.1*z-2.3)";
+		String z = "1.5 + 0.7i";
 		
-		funcEval.evaluate(funx,val);
+		System.out.println(funcEval.evaluate(funcZ,z));
+		//vaSelf
+		
+		ComplexNumber zz = cxT.doSelfEval(z);
+		System.out.println("SELFEVAL\n"+zz);
 		
 	}
 	
 	
+	private ComplexNumber doSelfEval(String z) {
+		ComplexNumber zz = new ComplexNumber(z);
+		zz=(new ComplexNumber(2.3).times(zz).minus(new ComplexNumber(7.1))).sine().minus(new ComplexNumber(7.1).times(zz).minus(new ComplexNumber(2.3)).cosine());
+		return zz;
+	}
+
 	private Expr expr() {
 		return new Expr();//"3 / (sin( 0.2 + 0.3 ) * ( 4 - 6 ))"
 	}
@@ -1345,7 +1355,7 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 	      
 	      public FunctionEvaluator(){}
 	      
-	      public void evaluate(String line,String line2){
+	      public ComplexNumber evaluate(String line,String line2){
 
 	          
 	             /* Get the function from the user.  A line of input is read and
@@ -1355,10 +1365,10 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 //	             System.out.println("\n\n\nEnter definition of f(x), or press return to quit.");
 	             System.out.print("\nf(x) = "+line.trim());
 //	             line = TextIO.getln().trim();
-	             if (line.length() == 0){
-	            	 System.out.println("Err___line");
-	             	return;	//break;
-	             	}
+			if (line.length() == 0) {
+				System.out.println("Err___line");
+				return null; // break;
+			}
 	                
 	             try {
 	                expression = new Expr(line);
@@ -1381,10 +1391,10 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 //	             while (true) {
 	                System.out.print("\nx = ");
 //	                line2 = "2.5";		//TextIO.getln().trim();
-	                if (line2.length() == 0){
-		            	 System.out.println("Err___line2");
-			             	return;	//break;
-			             	}
+			if (line2.length() == 0) {
+				System.out.println("Err___line2");
+				return null; // break;
+			}
 	                try {
 	                   x = new ComplexNumber(line2);//Double.parseDouble(line2);
 	                }
@@ -1398,9 +1408,9 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 	                else
 	                   System.out.println("f(" + x + ") = " + val);
 //	             }  // end while
-	             
+	             return val;
 	          
-	          System.out.println("\n\n\nOK.  Bye for now.");
+//	          System.out.println("\n\n\nOK.  Bye for now.");
 	      }
 	}
 	
