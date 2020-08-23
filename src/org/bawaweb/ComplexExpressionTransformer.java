@@ -27,6 +27,17 @@ public class ComplexExpressionTransformer {
 
 	final ComplexNumber i = new ComplexNumber(0.0, 1.0);
 
+	// Real π
+	final ComplexNumber pi = new ComplexNumber(Math.PI, 0.0);
+	final ComplexNumber PI = pi;
+
+	// Imaginary π
+	final ComplexNumber ipi = new ComplexNumber(0.0, Math.PI);
+
+	final ComplexNumber e = new ComplexNumber(Math.E, 0.0);
+	final ComplexNumber E = e;
+	final ComplexNumber iE = new ComplexNumber(0.0, Math.E);
+
 	final ComplexNumber one = new ComplexNumber(1.0, 0.0);
 	final ComplexNumber two = new ComplexNumber(2.0, 0.0);
 	final ComplexNumber three = new ComplexNumber(3.0, 0.0);
@@ -296,21 +307,54 @@ public class ComplexExpressionTransformer {
 	//////////////////////////////	
 		
 		FunctionEvaluator funcEval = cxT.evaluator();
-		String funcZ =  "sin(2.3*z-7.1) - cos(7.1*z-2.3)";
-		String z = "1.5 + 0.7i";
+		String funcNZ = "sin(2.3*z-7.1) - cos(7.1*z-2.3)";
+		////////	Standard Normal Distribution
+		String funcZ = "(1 / sqrt(2*3.14159265358979323846)) * exp((((-Z) ^ 2))/2) - i";
 		
-		System.out.println(funcEval.evaluate(funcZ,z));
+		String zLessI = "z - i";
+		String zLess2I = "z - i - i";
+		
+		//	π/2*(1.0 + 0.4i)
+		
+		String piFunc = "z + P / 2";//"z + P / 2 * (1.0 + 0.4 * i)";//"P/2*(1.0 + 0.4*i)";//	"π/2*(1.0 + 0.4*i)";//π
+		String fun = "z * 12.7e-12 * (1.0 + 0.4 * i)";
+		String z = "1.5 + 0.7i";
+		//	π
+		//System.out.println("funcEval is "+ funcEval.evaluate(zLess2I, z));//
+		System.out.println("funcEval is "+ funcEval.evaluate(piFunc, z));//zLess2I//fun
+//		System.out.println(cxT.doSelfEval());
+//		System.out.println((new ComplexNumber(1.5,0.7)).minus(new ComplexNumber(0.0,1.0)));
+		
 		//vaSelf
 		
-		ComplexNumber zz = cxT.doSelfEval(z);
-		System.out.println("SELFEVAL\n"+zz);
+		/*ComplexNumber zz = cxT.doSelfEval();
+		System.out.println("SELFEVAL is "+zz);*/
+		/*
+		System.out.println("self-funcEval");
+		System.out.println(zz.minus(funcEval.evaluate(piFunc, z)));*/
 		
+	}
+	
+	private ComplexNumber doSelfEval() {
+		ComplexNumber zz = new ComplexNumber("1.5 + 0.7i");
+		/*
+		/////////////OK/////////////////////////
+		System.out.println("I^2 is "	+	i.power(2));
+		System.out.println("I*I is "	+	i.times(i));
+		*/
+		
+		//String piFunc = "z * P / 2* (1.0 + 0.4 * i)";
+		String piFunc = "z + P / 2";//
+		//return zz.plus((PI.divides(two)).times((one.plus((four.divides(ten)).times(i)))));
+		return zz.plus(PI.divides(two));
+		//z-i
+		//return zz.minus(i).minus(i);
 	}
 	
 	
 	private ComplexNumber doSelfEval(String z) {
 		ComplexNumber zz = new ComplexNumber(z);
-		zz=(new ComplexNumber(2.3).times(zz).minus(new ComplexNumber(7.1))).sine().minus(new ComplexNumber(7.1).times(zz).minus(new ComplexNumber(2.3)).cosine());
+		//zz=(new ComplexNumber(2.3).times(zz).minus(new ComplexNumber(7.1))).sine().minus(new ComplexNumber(7.1).times(zz).minus(new ComplexNumber(2.3)).cosine());
 		return zz;
 	}
 
@@ -365,9 +409,9 @@ public class ComplexExpressionTransformer {
 		//	No stars for i		SO	1.1*i		invalid
 		//						but	1.1i		valid
 		public ComplexNumber(String c) {
-			System.out.println("c[1] is "+c);
+			/*System.out.println("c[1] is "+c);*/
 			c = c.replaceAll(WHITESPACE,EMPTY);
-			System.out.println("c[2] is "+c);
+			/*System.out.println("c[2] is "+c);*/
 			
 			final String plus = "+";
 			final String minus = "-";
@@ -496,6 +540,9 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 //			//ends	rem
 //			//	tokens-behave-bad
 //			
+			
+			/*System.out.println("real[c] is "+this.real);
+			System.out.println("imaginary[c] is "+this.imaginary);*/
 
 		}
 		
@@ -1031,25 +1078,25 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 									// indices into constants array
 		PLUS = -1, MINUS = -2, TIMES = -3, DIVIDE = -4, POWER = -5, SIN = -6, COS = -7, TAN = -8, COT = -9, SEC = -10,
 				CSC = -11, ARCSIN = -12, ARCCOS = -13, ARCTAN = -14, EXP = -15, LN = -16, LOG10 = -17, LOG2 = -18,
-				ABS = -19, SQRT = -20, UNARYMINUS = -21, VARIABLE = -22;
+				ABS = -19, SQRT = -20, UNARYMINUS = -21, VARIABLE_Z = -22, VARIABLE_I = -23;
 
 		private /*static*/ String[] functionNames = { 
 				// names of standard functions, used during parsing
 				"sin", "cos", "tan", "cot", "sec", "csc", "arcsin", "arccos", "arctan", "exp", "ln", "log10", "log2",
 				"abs", "sqrt" };
 
-		private ComplexNumber eval(ComplexNumber x2) { // evaluate this expression for
+		private ComplexNumber eval(ComplexNumber z) { // evaluate this expression for
 												// this value of the variable
 			try {
 				int top = 0;
-				for (int i = 0; i < codeSize; i++) {
-					if (code[i] >= 0)
-						stack[top++] = constants[code[i]];
-					else if (code[i] >= POWER) {
+				for (int indx = 0; indx < codeSize; indx++) {
+					if (code[indx] >= 0)
+						stack[top++] = constants[code[indx]];
+					else if (code[indx] >= POWER) {
 						ComplexNumber y = stack[--top];
 						ComplexNumber x = stack[--top];
 						ComplexNumber ans = new ComplexNumber(Double.NaN);
-						switch (code[i]) {
+						switch (code[indx]) {
 						case PLUS:
 							ans = x.plus( y );
 							break;
@@ -1069,12 +1116,14 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 						if (Double.isNaN(ans.real))
 							return ans;
 						stack[top++] = ans;
-					} else if (code[i] == VARIABLE) {
-						stack[top++] = x2;//new ComplexNumber(x2);
+					} else if (code[indx] == VARIABLE_Z) {
+						stack[top++] = z;//new ComplexNumber(x2);
+					} else if (code[indx] == VARIABLE_I) {
+						stack[top++] = i;//new ComplexNumber(x2);
 					} else {
 						ComplexNumber x = stack[--top];
 						ComplexNumber ans = new ComplexNumber(Double.NaN);
-						switch (code[i]) {
+						switch (code[indx]) {
 							case SIN:
 								ans = x.sine();//Math.sin(x);
 								break;
@@ -1157,7 +1206,7 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 			int s = 0; // stack size after each operation
 			int max = 0; // maximum stack size seen
 			for (int i = 0; i < codeSize; i++) {
-				if (code[i] >= 0 || code[i] == VARIABLE) {
+				if (code[i] >= 0 || code[i] == VARIABLE_Z || code[i] == VARIABLE_I) {
 					s++;
 					if (s > max)
 						max = s;
@@ -1250,9 +1299,16 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 		private void parsePrimary() {
 			skip();
 			char ch = next();
-			if (ch == 'z' || ch == 'Z') {
+			if (ch == 'z' || ch == 'Z' || ch == 'i' || ch == 'I') {
+
 				pos++;
-				code[codeSize++] = VARIABLE;
+
+				if (ch == 'z' || ch == 'Z') {
+					code[codeSize++] = VARIABLE_Z;
+				} else {
+					code[codeSize++] = VARIABLE_I;
+
+				}
 			} else if (Character.isLetter(ch))
 				parseWord();
 			else if (Character.isDigit(ch) || ch == '.')
@@ -1261,8 +1317,10 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 				pos++;
 				parseExpression();
 				skip();
-				if (next() != ')')
-					error("Expected a right parenthesis.");
+				if (next() != ')') {
+//					if (next() != 'i' && next() != 'I')
+						error("Expected a right parenthesis.");
+				}
 				pos++;
 			} else if (ch == ')')
 				error("Unmatched right parenthesis.");
@@ -1296,7 +1354,18 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 					return;
 				}
 			}
-			error("Unknown word '" + w + "' found in data.");
+			
+			if (w.equals("p")) {
+				skip();
+				pos++;
+				code[codeSize++] = (byte) constantCt;
+				constants[constantCt++] = PI;
+				parseExpression();
+				skip();
+				return;
+			} else {
+				error("Unknown word '" + w + "' found in data.");
+			}
 		}
 
 		private void parseNumber() {
@@ -1315,12 +1384,21 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 			}
 			if (w.equals("."))
 				error("Illegal number found, consisting of decimal point only.");
-			if (next() == 'E' || next() == 'e') {
+			if (next() == 'E' || next() == 'e' || next() == 'P' || next() == 'p') {
+				boolean isPi = (next() == 'P' || next() == 'p') ? true : false;
 				w += next();
 				pos++;
-				if (next() == '+' || next() == '-') {
+				if (next() == '+' || next() == '-' || 
+					 (isPi && 
+						(next() == '+' || next() == '-' || next() == '*' || next() == '/' || next() == '^'))) {
 					w += next();
 					pos++;
+					
+					code[codeSize++] = (byte) constantCt;
+					constants[constantCt++] = PI;
+					parseExpression();
+					skip();
+					return;
 				}
 				if (!Character.isDigit(next()))
 					error("Illegal number found, with no digits in its exponent.");
@@ -1355,7 +1433,7 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 	      
 	      public FunctionEvaluator(){}
 	      
-	      public ComplexNumber evaluate(String line,String line2){
+	      public ComplexNumber evaluate(String function,String complexNumber){
 
 	          
 	             /* Get the function from the user.  A line of input is read and
@@ -1363,15 +1441,15 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 	                empty, then the loop will end, and the program will terminate. */
 	     
 //	             System.out.println("\n\n\nEnter definition of f(x), or press return to quit.");
-	             System.out.print("\nf(x) = "+line.trim());
+	             System.out.println("\nf(x) = "+function.trim());
 //	             line = TextIO.getln().trim();
-			if (line.length() == 0) {
+			if (function.length() == 0) {
 				System.out.println("Err___line");
 				return null; // break;
 			}
 	                
 	             try {
-	                expression = new Expr(line);
+	                expression = new Expr(function);
 	             }
 	             catch (IllegalArgumentException e) {
 	                    // An error was found in the input.  Print an error
@@ -1391,15 +1469,15 @@ this.real=Double.NaN;this.imaginary=Double.NaN;
 //	             while (true) {
 	                System.out.print("\nx = ");
 //	                line2 = "2.5";		//TextIO.getln().trim();
-			if (line2.length() == 0) {
+			if (complexNumber.length() == 0) {
 				System.out.println("Err___line2");
 				return null; // break;
 			}
 	                try {
-	                   x = new ComplexNumber(line2);//Double.parseDouble(line2);
+	                   x = new ComplexNumber(complexNumber);//Double.parseDouble(line2);
 	                }
 	                catch (NumberFormatException e) {
-	                   System.out.println("\"" + line2 + "\" is not a legal number.");
+	                   System.out.println("\"" + complexNumber + "\" is not a legal number.");
 //	                   continue;
 	                }
 	                val = expression.value(x);
