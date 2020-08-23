@@ -27,6 +27,9 @@ public class Fibonacci {
 		System.out.println("\n\nTribonacci\n====================================================");
 		System.out.print(a1 + " " + a2 + " " + a3);	// printing 0, 0, 1
 		printTribonacci(count - 3);					// n-3, since 3 numbers are already printed
+		
+		System.out.println("\n\nUsing Recursion - fib("+(count-10)+") is: ");
+		System.out.print( fib(count-10) );
 	}
 
 
@@ -77,6 +80,17 @@ public class Fibonacci {
 //		a(n) = a(n-1) + a(n-2) + a(n-3) 
 //		with 
 //		a(0) = a(1) = 0, a(2) = 1. 
-
+	
+	
+	
+	//https://engineering.shopify.com/blogs/engineering/understanding-programs-using-graphs/
+	//  note -- recursive
+	static int fib(int n) {
+		if (n <= 1) {
+			return n;
+		} else {
+			return fib(n - 1) + fib(n - 2);
+		}
+	}
 	
 }
