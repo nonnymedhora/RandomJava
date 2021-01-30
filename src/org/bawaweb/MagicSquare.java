@@ -10,18 +10,19 @@ package org.bawaweb;
 public class MagicSquare {
 
 	public static void main(String[] args) {
-		
+//		System.out.println("bits==38505===="+0b1001_0110_0110_1001);
+		MagicSquare msq = new MagicSquare();
 		for (int n = 3; n <= 40; n++) {
 			System.out.println("for  "+n);
 			int[][] magic = new int[n][n];
-			magic = createMagic(n, magic);
-			if (checkMagic(magic)) {
-				printMagic(n, magic);
+			magic = msq.createMagic(n, magic);
+			if (msq.checkMagic(magic)) {
+				msq.printMagic(n, magic);
 			} 
 		}
 	}
 
-	private static boolean checkMagic(int[][] matrix) {
+	private boolean checkMagic(int[][] matrix) {
 		boolean isThereMagic = false;
 		final int baseCheck = getRowSum(matrix, 0);
 		final int length = matrix.length;
@@ -62,7 +63,7 @@ public class MagicSquare {
 		return isThereMagic;
 	}
 
-	protected static int[][] createMagic(int n, int[][] magic) {
+	protected int[][] createMagic(int n, int[][] magic) {
 		if (n % 2 != 0) {
 			return createOddMagic(n, magic);
 		} else {
@@ -77,7 +78,7 @@ public class MagicSquare {
 		return null;
 	}
 
-	private static int[][] createDoublyEvenMagic(int n, int[][] matrix) {
+	private int[][] createDoublyEvenMagic(int n, int[][] matrix) {
  
         // pattern of count-up vs count-down zones
         int bits = 0b1001_0110_0110_1001;
@@ -93,7 +94,7 @@ public class MagicSquare {
         return matrix;
 	}
 
-	protected static int[][] createSinglyEvenMagic(int n, int[][] matrix) {
+	protected int[][] createSinglyEvenMagic(int n, int[][] matrix) {
  
         int size = n * n;
         int halfN = n / 2;
@@ -131,7 +132,7 @@ public class MagicSquare {
 		
 	}
 
-	protected static int[][] createOddMagic(int n, int[][] matrix) {
+	protected int[][] createOddMagic(int n, int[][] matrix) {
 		int row = n - 1;
 		int col = n / 2;
 		matrix[row][col] = 1;
@@ -148,7 +149,7 @@ public class MagicSquare {
 		return matrix;
 	}
 
-	protected static void printMagic(int n, int[][] magic) {
+	protected void printMagic(int n, int[][] magic) {
 		System.out.println("------------"+n+"---------------");
 		// print results
 		for (int i = 0; i < n; i++) {
@@ -164,7 +165,7 @@ public class MagicSquare {
 		System.out.println("---------------------------\n\n");
 	}
 
-	private static int getArraySum(final int[] anArray) {
+	private int getArraySum(final int[] anArray) {
 		int sum = 0;
 		final int length = anArray.length;
 		for (int index = 0; index < length; index++) {
@@ -173,7 +174,7 @@ public class MagicSquare {
 		return sum;
 	}
 
-	protected static int[] getColumn(final int[][] aMatrix, final int aCol) {
+	private int[] getColumn(final int[][] aMatrix, final int aCol) {
 		final int length = aMatrix[0].length;
 		int[] theColumn = new int[length];
 		for (int row = 0; row < length; row++) {
@@ -182,12 +183,12 @@ public class MagicSquare {
 		return theColumn;
 	}
 
-	protected static int getColSum(final int[][] aMatrix, final int aCol) {
+	private int getColSum(final int[][] aMatrix, final int aCol) {
 		int[] colArray = getColumn(aMatrix, aCol);
 		return getArraySum(colArray);
 	}
 
-	protected static int[] getRow(final int[][] aMatrix, final int aRow) {
+	private int[] getRow(final int[][] aMatrix, final int aRow) {
 		final int length = aMatrix[0].length;
 		int[] theRow = new int[length];
 		for (int col = 0; col < length; col++) {
@@ -196,12 +197,12 @@ public class MagicSquare {
 		return theRow;
 	}
 
-	protected static int getRowSum(final int[][] aMatrix, final int aRow) {
+	private int getRowSum(final int[][] aMatrix, final int aRow) {
 		int[] rowArray = getRow(aMatrix, aRow);
 		return getArraySum(rowArray);
 	}
 
-	protected static int[] getLRDiagonal(final int[][] aMatrix) {
+	private int[] getLRDiagonal(final int[][] aMatrix) {
 		int[] lrDiag = new int[aMatrix[0].length];
 		final int length = aMatrix[0].length;
 		for (int row = 0; row < length; row++) {
@@ -214,12 +215,12 @@ public class MagicSquare {
 		return lrDiag;
 	}
 
-	protected static int getLRDiagonalSum(final int[][] aMatrix) {
+	private int getLRDiagonalSum(final int[][] aMatrix) {
 		int[] lrDiag = getLRDiagonal(aMatrix);
 		return getArraySum(lrDiag);
 	}
 
-	protected static int[] getRLDiagonal(final int[][] aMatrix) {
+	private int[] getRLDiagonal(final int[][] aMatrix) {
 		int[] rlDiag = new int[aMatrix[0].length];
 		final int length = aMatrix[0].length;
 
@@ -234,7 +235,7 @@ public class MagicSquare {
 		return rlDiag;
 	}
 
-	protected static int getRLDiagonalSum(final int[][] aMatrix) {
+	private int getRLDiagonalSum(final int[][] aMatrix) {
 		int[] rlDiag = getRLDiagonal(aMatrix);
 		return getArraySum(rlDiag);
 	}
