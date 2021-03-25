@@ -3,6 +3,8 @@
  */
 package org.bawaweb.math;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Stack;
 public class HighNum {
 
 	private final String numString;
-	private boolean isDebug = false;
+	private boolean isDebug = false;//true;//
 
 	public HighNum(final String string) {
 		this.numString = string;
@@ -37,7 +39,6 @@ public class HighNum {
 		Stack<Character> lrgrStck = myStack.size() >= aStack.size() ? myStack : aStack;
 		Stack<Integer> sumStack = new Stack<Integer>();
 		
-		HighNum numSum = null;
 		String numSumStr = "";
 		int carryOver = 0;
 		final int smllStckSize = smallrStck.size();
@@ -124,11 +125,83 @@ public class HighNum {
 			System.out.println("numSumStr===>>" + numSumStr);
 		}
 		
-		return numSum = new HighNum(numSumStr);
+		return new HighNum(numSumStr);
 	}
 
-	private void printStack(Stack sStack) {
-		final Stack aStack = (Stack) sStack.clone();
+	private HighNum times(final HighNum aNum) {
+		return this.multiply(aNum);		
+	}
+	
+	private HighNum multiply(HighNum aNum) {
+		Stack<Character> myStack = this.getStack(this.numString);
+		Stack<Character> aStack = this.getStack(aNum);
+
+		Stack<Character> smallrStck = myStack.size() <= aStack.size() ? myStack : aStack;
+		Stack<Character> lrgrStck = myStack.size() >= aStack.size() ? myStack : aStack;
+		
+		final int smllStckSize = smallrStck.size();
+		Character s = null;
+		
+		List<HighNum> theNums = new ArrayList<HighNum>();
+		
+		for (int i = 0; i < smllStckSize; i++) {
+			s = smallrStck.pop();
+			theNums.add(this.getHighNum(this.multiply(i, s, lrgrStck)));
+		}
+		
+		return this.addAllNums(theNums);
+	}
+
+	private HighNum addAllNums(List<HighNum> theNums) {
+		HighNum sum = new HighNum("0");
+		for(int i = 0; i < theNums.size(); i++) {
+			sum = sum.plus(theNums.get(i));
+		}
+		return sum;
+	}
+
+	private HighNum getHighNum(Stack<?> aStack) {
+		String s = "";
+		Stack<?> stck = (Stack<?>) aStack.clone();
+		for(int i = 0; i < aStack.size(); i++) {
+			s += stck.pop();
+		}
+		return new HighNum(s);
+	}
+	
+	private Stack<Character> multiply(final int i, final Character s, final Stack<Character> lrgrStck) {
+		Stack<Character> multStack = new Stack<Character>();
+		for(int indx = 0; indx < i; indx++) {
+			multStack.push('0');
+		}
+
+		Stack<Character> aStck = (Stack<Character>) lrgrStck.clone();
+		Character l = null;
+		int carry = 0;
+		for (int j = 0; j < lrgrStck.size(); j++) {
+			l = aStck.pop();
+			int m = this.multiply(s, l, carry);
+			if (m >= 10) {
+				carry = m / 10;
+				multStack.push(new Integer(m % 10).toString().charAt(0));
+			} else {
+				carry = 0;
+				multStack.push(new Integer(m).toString().charAt(0));
+			}
+		}
+		
+		if (this.isDebug)	
+			this.printStack(multStack);
+		
+		return multStack;
+	}
+
+	private int multiply(Character x, Character y, int c) {
+		return (Character.getNumericValue(x) * Character.getNumericValue(y)) + c;
+	}
+
+	private void printStack(Stack<?> sStack) {
+		final Stack<?> aStack = (Stack<?>) sStack.clone();
 		String ss = "";
 		for (int i = 0; i < sStack.size(); i++) {
 			ss += String.valueOf(aStack.pop());
@@ -141,7 +214,7 @@ public class HighNum {
 			System.out.println("In getNumSumStr");
 			printStack(sStack);
 		}
-		final Stack aStack = (Stack) sStack.clone();
+		final Stack<Integer> aStack = (Stack<Integer>) sStack.clone();
 		String ss = "";
 		StringBuilder s = new StringBuilder("");
 		for (int i = 0; i < sStack.size(); i++) {
@@ -174,8 +247,10 @@ public class HighNum {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+//		int p = 7;
+//		System.out.println(new Integer(p).toString().charAt(0));
 		if (args.length == 0) {
+			/***********************************************/
 			/*
 			 * int p = 27; int d = p%10; int m = p/10;
 			 * System.out.println("p==="+p+", p%10="+d+", p/10=="+m);
@@ -191,6 +266,12 @@ public class HighNum {
 			left =  new HighNum("14141419999999994");
 			right = new HighNum("878787124558");
 			System.out.println("LeftPlusRight--" + left.plus(right).getNumString());
+			
+		/***********************************************/	
+			left =  new HighNum("122344"); 
+			right = new HighNum("1234");
+			System.out.println("LeftTimesRight--" + left.times(right).getNumString());
+			
 		} else {
 			if (args.length == 3) {
 				HighNum left = new HighNum(args[0]);
@@ -199,6 +280,8 @@ public class HighNum {
 				
 				switch(op) {
 				case	"plus":	System.out.println("LeftPlusRight-->>" + left.plus(right).getNumString());
+				break;
+				case	"times":	System.out.println("LeftTimesRight-->>" + left.times(right).getNumString());
 				break;
 				default:
 					System.out.println("LeftPlusRight-->" + left.plus(right).getNumString());
@@ -211,3 +294,25 @@ public class HighNum {
 	}
 
 }
+/* * 
+ *	Navroz@Navroz-PC MINGW64 ~/eclipseSpaces/workspace/RandomJava/bin (master)
+ *	$ java org.bawaweb.math.HighNum 7848558510558566 times 988597489936585154
+ *	LeftTimesRight-->>920607742610156716330279163129164
+ * 	Navroz@Navroz-PC MINGW64 ~/eclipseSpaces/workspace/RandomJava/bin (master)
+ * 
+ * 
+ * 
+Navroz@Navroz-PC MINGW64 ~/eclipseSpaces/workspace/RandomJava/bin (master)
+$ java org.bawaweb.math.HighNum 7848558510558566 times 988597489936585154
+LeftTimesRight-->>920607742610156716330279163129164
+
+Navroz@Navroz-PC MINGW64 ~/eclipseSpaces/workspace/RandomJava/bin (master)
+$ java org.bawaweb.math.HighNum 15448855851055856677 times 3398859748993658515466
+LeftTimesRight-->>41386382220046799509720727950312683866482
+
+Navroz@Navroz-PC MINGW64 ~/eclipseSpaces/workspace/RandomJava/bin (master)
+$
+
+ * 
+ * 
+ */
