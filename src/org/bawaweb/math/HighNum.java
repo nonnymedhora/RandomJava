@@ -14,16 +14,20 @@ import java.util.Stack;
 public class HighNum {
 
 	private static final char DOT = '.';
+	private static final char DASH = '-';
 	private static final char ZERO = '0';
 //	private static final char EMPTY = "".charAt(0);//".";
 	private final String numString;
 	private boolean isDebug = false;//true;//
 	private boolean isDecimal = false;
+	private boolean isNegative = false;
 
 	public HighNum(final String string) {
 		this.numString = string;
 		
 		this.isDecimal = string.contains(new Character(DOT).toString());
+		
+		this.isNegative  = string.startsWith(String.valueOf(DASH));
 		
 		if (this.isDebug) {
 			System.out.println("for " + this.numString + "  decimal==" + this.isDecimal);
@@ -35,6 +39,7 @@ public class HighNum {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (isDecimal ? 1231 : 1237);
+		result = prime * result + (isNegative ? 1231 : 1237);
 		result = prime * result + ((numString == null) ? 0 : numString.hashCode());
 		return result;
 	}
@@ -49,6 +54,8 @@ public class HighNum {
 			return false;
 		HighNum other = (HighNum) obj;
 		if (isDecimal != other.isDecimal)
+			return false;
+		if (isNegative != other.isNegative)
 			return false;
 		if (numString == null) {
 			if (other.numString != null)
@@ -315,8 +322,6 @@ public class HighNum {
 		int bDotPosn = bStr.indexOf(DOT);
 		int minorBLngth = bStr.substring(bDotPosn + 1).length();
 		
-		/**/
-
 		aStr = aStr.substring(0, aDotPosn) + aStr.substring(aDotPosn + 1);
 		bStr = bStr.substring(0, bDotPosn) + bStr.substring(bDotPosn + 1);
 		if(this.isDebug){
@@ -330,12 +335,17 @@ public class HighNum {
 		HighNum multNum = new HighNum(aStr).times(new HighNum(bStr));
 		String multStr = multNum.getNumString();
 		if(this.isDebug)
-			System.out.println("multStr===="+multStr);
+			System.out.println("aDotPosn--->"+aDotPosn+"===bDotPosn--->"+bDotPosn+"\nmultStr===="+multStr);
 		
-		int multDotPosn = aDotPosn + bDotPosn - 1;
-		String mString = multStr.substring(0, multDotPosn + 1) + DOT + multStr.substring(multDotPosn + 1);
+		int multDotNum = minorALngth + minorBLngth;
+		int mDtPosn = multStr.length() - multDotNum;
+
+		if(this.isDebug)
+			System.out.println("multDotNum===="+multDotNum+",,mDtPosn===="+mDtPosn);
 		
-		return new HighNum(mString);
+		String mStr = multStr.substring(0, mDtPosn) + DOT + multStr.substring(mDtPosn);
+		
+		return new HighNum(mStr);
 //		
 //		
 //		
@@ -538,8 +548,12 @@ public class HighNum {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		int p = 7;
+		int p = 7;
 //		System.out.println(new Integer(p).toString().charAt(0));
+		int pq = 4; 
+		
+		System.out.println("4-7==="+(pq-p));
+				
 		if (args.length == 0) {
 			/***********************************************/
 			/*
@@ -595,17 +609,36 @@ public class HighNum {
 			right = new HighNum("4573");//1234710406997
 			System.out.println(left.getNumString()+" times " +right.getNumString()+" == "+ left.times(right).getNumString());
 
-			left =  new HighNum("27.0000089"); //XXX	12347.10406997
+			left =  new HighNum("27.0000089"); //1234.710406997
 			right = new HighNum("45.73");//1234.710406997
 			System.out.println(left.getNumString()+" times " +right.getNumString()+" == "+ left.times(right).getNumString());
 
-			left =  new HighNum("561.9000089"); //XXX	224788493.5761512567
+			left =  new HighNum("561.9000089"); //22478849.35761512567
 			right = new HighNum("40005.0703");//22478849.35761512567
 			System.out.println(left.getNumString()+" times " +right.getNumString()+" == "+ left.times(right).getNumString());
 
-			left =  new HighNum("2790.0000089"); //XXX	1280323.47108418597
+			left =  new HighNum("2790.0000089"); //128032.347108418597
 			right = new HighNum("45.88973");//128032.347108418597
 			System.out.println(left.getNumString()+" times " +right.getNumString()+" == "+ left.times(right).getNumString());
+
+
+			left =  new HighNum("11.25");//XXX	100.00
+			right = new HighNum("88.75");//100
+			System.out.println(left.getNumString()+" Plus " +right.getNumString()+" == "+ left.plus(right).getNumString());
+
+
+			left =  new HighNum("1.25");//XXX	12.00
+			right = new HighNum("10.75");//12
+			System.out.println(left.getNumString()+" Plus " +right.getNumString()+" == "+ left.plus(right).getNumString());
+
+			left =  new HighNum("11.25");//998.4375
+			right = new HighNum("88.75");//998.4375
+			System.out.println(left.getNumString()+" Times " +right.getNumString()+" == "+ left.times(right).getNumString());
+
+			left =  new HighNum("1.20");//XXX	0.6000
+			right = new HighNum("0.50");//0.6
+			System.out.println(left.getNumString()+" Times " +right.getNumString()+" == "+ left.times(right).getNumString());
+
 			
 		} else {
 			if (args.length == 3) {
@@ -616,7 +649,11 @@ public class HighNum {
 				switch(op) {
 				case	"plus":	System.out.println("LeftPlusRight-->>" + left.plus(right).getNumString());
 				break;
+				case	"+":	System.out.println("LeftPlusRight-->>" + left.plus(right).getNumString());
+				break;
 				case	"times":	System.out.println("LeftTimesRight-->>" + left.times(right).getNumString());
+				break;
+				case	"*":	System.out.println("LeftTimesRight-->>" + left.times(right).getNumString());
 				break;
 				default:
 					System.out.println("LeftPlusRight-->" + left.plus(right).getNumString());
