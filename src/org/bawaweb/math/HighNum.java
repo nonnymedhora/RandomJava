@@ -69,17 +69,221 @@ public class HighNum {
 		return this.numString;
 	}
 	
+	/**
+	 * Returns a clean HighNum
+	 * so	0.60000	becomes 0.6
+	 * and	12.000 becomes 12
+	 * etc
+	 * @param aNum - the string to clean up
+	 * @return
+	 */
+	private HighNum cleanup(final String aNum) {
+		String astr = aNum;
+
+		if (astr.contains(new Character(DOT).toString())) {
+
+			if (astr.endsWith(String.valueOf(ZERO))) {
+				// remove trailing zeroes
+				boolean done = false;
+				do {
+					astr = astr.substring(0,astr.length()-1);
+					done = !astr.endsWith(String.valueOf(ZERO));
+				} while (!done);
+				
+				// remove last dot char
+				if(astr.endsWith(String.valueOf(DOT))){
+					astr = astr.substring(0,astr.length()-1);
+				}
+			}
+		}
+		
+		return new HighNum(astr);
+	}
+	
+
+	public boolean isNegativeDecimal() {
+		return (this.isDecimal && this.isNegative);
+	}
+
+	public boolean isNegative() {
+		return this.isNegative;
+	}
+
+	public void setNegative(boolean isNgve) {
+		this.isNegative = isNgve;
+	}
+
+	public boolean isDecimal() {
+		return this.isDecimal;
+	}
+
+	public void setDecimal(boolean isDml) {
+		this.isDecimal = isDml;
+	}
+
 	private boolean containsDecimal(HighNum a, HighNum b) {
 		return (a.isDecimal || b.isDecimal);
+	}
+
+	private boolean containsNegative(HighNum a, HighNum b) {
+		return (a.isNegative || b.isNegative);
 	}
 
 	private HighNum plusDecimals(final HighNum aNum, final HighNum bNum) {
 		return this.plusDecimals(aNum, bNum, 0);
 	}
+	
+
+
+	public HighNum minus(final HighNum aNum) {
+		return this.minus(aNum, 0);
+
+	}
+	
+	private HighNum minus(HighNum aNum, int carryOver) {
+		// TODO Auto-generated method stub
+		if (this.containsDecimal(this, aNum)) {
+			if (!this.containsNegative(this, aNum)) {
+				return this.minusDecimals(this, aNum, carryOver);
+			} else {
+				return this.minusNegDecimals(this, aNum, carryOver);
+			}
+		}
+		return null;
+	}
+
+	private HighNum minusNegDecimals(HighNum aNum, HighNum bNum, int carryOver) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private HighNum minusDecimals(HighNum aNum, HighNum bNum, int carryOver) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private int minus(final char a, final char b, final int carry) {
+		int diff = 0;
+		int lftVal = Character.getNumericValue(a);
+		int rhtVal = Character.getNumericValue(b) + carry;
+
+		if (lftVal == rhtVal)
+			return diff;
+		
+		if (lftVal > rhtVal)
+			return diff = (lftVal - rhtVal);
+
+		return diff = ((lftVal + 10) - rhtVal);
+	}
+	
+	/**
+	 * Returns true if 'this' is greater than aNum
+	 * @param aNum	-	the HighNum to test
+	 * @return	true - if this is greater than aNum
+	 * 			false	- otherwise
+	 */
+	public boolean isGreaterThan(final HighNum aNum) {
+		boolean isGreater = false;
+		boolean amINegative = this.isNegative;
+		boolean isANumNegative = aNum.isNegative;
+
+		if (!(this.isDecimal || aNum.isDecimal)) {
+			if (!(amINegative || isANumNegative)) {
+				if (this.getNumString().length() != aNum.getNumString().length()) {
+					return this.getNumString().length() > aNum.getNumString().length() ? true : false;
+				} else {
+					// doComparison	8876 to 2212	//	5754	to 5709
+					for(int i = 0; i < this.getNumString().length(); i++) {
+						if (this.getNumString().charAt(i) == aNum.getNumString().charAt(i)) {
+							continue;
+						} else {
+							return Character.getNumericValue(this.getNumString().charAt(i))
+									> Character.getNumericValue(aNum.getNumString().charAt(i)) 
+									? true : false;
+						}
+					}
+					
+				}
+			} else {
+				if (amINegative && !isANumNegative)
+					return false;
+				if (!amINegative && isANumNegative)
+					return true;
+				
+				if (!amINegative && !isANumNegative) {
+					System.out.println("11111hererreiammmmm");
+				}
+
+			}
+			/////////////ends	notDecimals 4 neither
+		} else {
+			/////////// eitherRDecimals
+			if (!(amINegative || isANumNegative)) {
+				if(this.isDebug)	System.out.println("2222hererreiammmmm");
+				
+				final String myNumString = this.getNumString();
+				String majorMyStr = myNumString.substring(0,this.getDotPosition(myNumString));
+				String minorMyStr = myNumString.substring(this.getDotPosition(myNumString) + 1);
+
+				HighNum majorMyNum = new HighNum(majorMyStr);
+				HighNum minorMyNum = new HighNum(minorMyStr);
+				
+				final String aNumString = aNum.getNumString();
+				String majorAStr = aNumString.substring(0,this.getDotPosition(aNumString));
+				String minorAStr = aNumString.substring(this.getDotPosition(aNumString) + 1);
+
+				HighNum majorANum = new HighNum(majorAStr);
+				HighNum minorANum = new HighNum(minorAStr);
+				
+				return majorMyNum.isGreaterThan(majorANum);
+				
+				
+			} else {
+				if (amINegative && !isANumNegative)
+					return false;
+				if (!amINegative && isANumNegative)
+					return true;
+				
+				if (!amINegative && !isANumNegative) {
+					System.out.println("3333hererreiammmmm");
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Here either a or b or both are decimal
+	 * AND either a or b or both are negative
+	 * @param aNum
+	 * @param bNum
+	 * @param carry
+	 * @return
+	 */
+	private HighNum plusNegDecimals (final HighNum aNum, final HighNum bNum, int carry) {
+		boolean leftNeg = aNum.isNegative;
+		boolean rightNeg = bNum.isNegative;
+		
+		boolean leftDec = aNum.isDecimal;
+		boolean rightDec = bNum.isDecimal;
+		
+		boolean leftNegDec = aNum.isNegativeDecimal();
+		boolean rightNegDec = bNum.isNegativeDecimal();
+		
+		// below condition should never reach 
+		//	a,b both neither decimal/nor negative
+		if(!(leftNeg||rightNeg||leftDec||rightDec))
+			return aNum.plus(bNum,carry);
+		
+		
+		return bNum;
+		
+	}
 
 	/**
 	 * Here either a or b or both are decimal
-	 * @param aNum
+	 * But BOTH are positive
+	 * @param aNum	
 	 * @param bNum
 	 * @return
 	 */
@@ -177,7 +381,7 @@ public class HighNum {
 		}
 
 		HighNum majorSum = majorANum.plus(majorBNum, carry);
-		return new HighNum(majorSum.getNumString() + DOT + minorSum.getNumString());
+		return /*new HighNum(*/this.cleanup(majorSum.getNumString() + DOT + minorSum.getNumString())/*)*/;
 
 	}
 
@@ -189,14 +393,18 @@ public class HighNum {
 		return dString.length();
 	}
 
-	private HighNum plus(final HighNum aNum) {
+	public HighNum plus(final HighNum aNum) {
 		return this.plus(aNum, 0);
 
 	}
 
 	private HighNum plus(final HighNum aNum, int carryOver/* = 0*/) {
 		if (this.containsDecimal(this, aNum)) {
-			return this.plusDecimals(this, aNum, carryOver );
+			if (!this.containsNegative(this, aNum)) {
+				return this.plusDecimals(this, aNum, carryOver);
+			} else {
+				return this.plusNegDecimals(this, aNum, carryOver);
+			}
 		}
 
 		Stack<Character> myStack = this.getStack(this.numString);
@@ -345,7 +553,7 @@ public class HighNum {
 		
 		String mStr = multStr.substring(0, mDtPosn) + DOT + multStr.substring(mDtPosn);
 		
-		return new HighNum(mStr);
+		return /*new HighNum*/this.cleanup(mStr);
 //		
 //		
 //		
@@ -413,7 +621,7 @@ public class HighNum {
 		return this.multiplyDecimals(aNum, bNum, 0);		
 	}
 	
-	private HighNum times(final HighNum aNum) {
+	public HighNum times(final HighNum aNum) {
 		return this.multiply(aNum);		
 	}
 	
@@ -552,7 +760,7 @@ public class HighNum {
 //		System.out.println(new Integer(p).toString().charAt(0));
 		int pq = 4; 
 		
-		System.out.println("4-7==="+(pq-p));
+//		System.out.println("4-7==="+(pq-p));
 				
 		if (args.length == 0) {
 			/***********************************************/
@@ -560,6 +768,11 @@ public class HighNum {
 			 * int p = 27; int d = p%10; int m = p/10;
 			 * System.out.println("p==="+p+", p%10="+d+", p/10=="+m);
 			 */
+			HighNum id = new HighNum("54637.87680000");
+			HighNum id1 = new HighNum("54637.0000");
+			
+			System.out.println("id == "+id.getNumString() +"\nclean=="+ id.cleanup(id.getNumString()).getNumString());
+			System.out.println("id1 == "+id1.getNumString() +"\nclean=="+ id1.cleanup(id1.getNumString()).getNumString());
 			
 			HighNum idD = new HighNum("876543234567.8765456");
 			HighNum idD2 = new HighNum("9876.34565445656");//876543244444.22220005656(+)	
@@ -639,11 +852,64 @@ public class HighNum {
 			right = new HighNum("0.50");//0.6
 			System.out.println(left.getNumString()+" Times " +right.getNumString()+" == "+ left.times(right).getNumString());
 
+
+			left = new HighNum("8876");
+			right = new HighNum("2212");
 			
-		} else {
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+
+			left = new HighNum("5574");
+			right = new HighNum("5509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+
+			left = new HighNum("-5574");
+			right = new HighNum("5509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+			left = new HighNum("5574");
+			right = new HighNum("-5509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+			left = new HighNum("544444574");
+			right = new HighNum("5509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+
+			left = new HighNum("5574");
+			right = new HighNum("566666666509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+			left = new HighNum("578878888.8574");
+			right = new HighNum("56666666.6509");
+			
+			System.out.println(left.getNumString()+" Greater " +right.getNumString()+" > "+ left.isGreaterThan(right));
+
+			left = new HighNum("107");
+			right = new HighNum("89");
+			
+			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" -=> "+ left.minus(right));
+
+			left = new HighNum("545.8574");
+			right = new HighNum("187.6509");
+			
+			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" -=> "+ left.minus(right));
+
+			
+			
+			
+			
+		} else {System.out.println("argslength==="+args.length);//for	*	==	4
 			if (args.length == 3) {
+				System.out.println("a0===>"+args[0]+"a1==="+args[1]+"a2==="+args[2]);
 				HighNum left = new HighNum(args[0]);
-				String op = args[1];
+				String op = args[1];System.out.println("op	==	"+op);
 				HighNum right = new HighNum(args[2]);
 				
 				switch(op) {
