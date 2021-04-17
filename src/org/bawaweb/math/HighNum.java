@@ -149,6 +149,73 @@ public class HighNum {
 				return this.minusNegDecimals(this, aNum, carryOver);
 			}
 		}
+		
+		if(this.isDebug)
+			System.out.println("In here -- minus,neither neg nor dec");
+		
+		Stack<Character> myStack = this.getStack(this.numString);
+		Stack<Character> aStack = this.getStack(aNum);
+		
+		if (this.isDebug) {
+			System.out.println("myStackIs----strLen==" + this.numString.length() + ",numString==" + this.numString);
+			this.printStack(myStack);
+			System.out.println(
+					"aStackIs----strLen==" + aNum.getNumString().length() + ",numString==" + aNum.getNumString());
+			this.printStack(aStack);
+		}
+		
+		Stack<Integer> minusStack = new Stack<Integer>();
+		String numMinusStr = "";
+		
+		boolean amILarger = this.isGreaterThan(aNum);
+		
+		if (myStack.size() == aStack.size()) {
+			
+			
+			
+			Character s = null;
+			Character l = null;
+			
+			int size = myStack.size();
+			for (int i = 0; i < size; i++) {
+				s = myStack.pop();
+				l = aStack.pop();
+
+				int valCMinus = amILarger ? this.getMinusCharMapping(s, l, carryOver)
+						: this.getMinusCharMapping(l, s, carryOver);
+				if (valCMinus > 10) {
+					carryOver = valCMinus % 10;
+					minusStack.push(valCMinus - 10);
+				} else {
+					carryOver = 0;
+					minusStack.push(valCMinus);
+				}
+			}
+
+			/*if (carryOver != 0) {
+				minusStack.push(carryOver);
+			}*/
+			
+			if (this.isDebug) {
+				System.out.print("numMinusStack==");
+				this.printStack(minusStack);
+			}
+
+			numMinusStr = this.getNumSumStr(minusStack);
+			if (this.isDebug) {
+				System.out.print("numMinusStr==>" + numMinusStr);
+			}
+
+			if (!amILarger) {
+				numMinusStr = DASH + numMinusStr;
+				if (this.isDebug)
+					System.out.print("[!amILarger]numMinusStr==>" + numMinusStr);
+			}
+
+			return new HighNum(numMinusStr);
+
+		}
+		
 		return null;
 	}
 
@@ -162,7 +229,7 @@ public class HighNum {
 		return null;
 	}
 
-	private int minus(final char a, final char b, final int carry) {
+	private int /*minus*/getMinusCharMapping(final char a, final char b, final int carry) {
 		int diff = 0;
 		int lftVal = Character.getNumericValue(a);
 		int rhtVal = Character.getNumericValue(b) + carry;
@@ -173,7 +240,7 @@ public class HighNum {
 		if (lftVal > rhtVal)
 			return diff = (lftVal - rhtVal);
 
-		return diff = ((lftVal + 10) - rhtVal);
+		return diff = ((lftVal + 10) - rhtVal) + 10;
 	}
 	
 	/**

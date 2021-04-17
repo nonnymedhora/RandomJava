@@ -134,12 +134,30 @@ public class HighNumTest {
 		assert(! n.isDecimal() );
 	}
 
-/*
+
 	@Test
 	public void testMinus() {
-		fail("Not yet implemented"); // TODO
+		String a = "8876";
+		String b = "2212";
+		
+		HighNum aNum = new HighNum(a);
+		HighNum bNum = new HighNum(b);
+		
+		assert (aNum.minus(bNum).getNumString().equals("6664"));
+
+		a = "2212";
+		b = "8876";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).getNumString().equals("-6664"));
+		
+		a = "2222";
+		b = "8888";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).equals(new HighNum("-6666")));
 	}
-*/
+
 	@Test
 	public void testPlus() {
 		String a = "8876";
