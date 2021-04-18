@@ -150,12 +150,41 @@ public class HighNumTest {
 		aNum = new HighNum(a);
 		bNum = new HighNum(b);
 		assert (aNum.minus(bNum).getNumString().equals("-6664"));
-		
+
 		a = "2222";
 		b = "8888";
 		aNum = new HighNum(a);
 		bNum = new HighNum(b);
 		assert (aNum.minus(bNum).equals(new HighNum("-6666")));
+
+		a = "154.485";
+		b = "88.88";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+//		System.out.println("aNum.minus(bNum)---"+aNum.minus(bNum).getNumString());
+		assert (aNum.minus(bNum).equals(new HighNum("65.605")));
+		
+		a = "154.485";
+		b = "148.188";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).equals(new HighNum("6.297")));
+
+
+		a = "221";
+		b = "8876";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).equals(new HighNum("-8655")));
+
+
+		a = "2214";
+		b = "8876";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).getNumString().equals("-6662"));
+		
+		
 	}
 
 	@Test
@@ -299,6 +328,17 @@ public class HighNumTest {
 		aNum = new HighNum(a);
 		bNum = new HighNum(b);
 		assert (aNum.times(bNum).equals(new HighNum("0.6")));
+		
+		a = "12345679";
+		b = "45";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.times(bNum).equals(new HighNum("555555555")));
+		
+
+		b = "54";
+		bNum = new HighNum(b);
+		assert (aNum.times(bNum).equals(new HighNum("666666666")));
 	}
 
 }

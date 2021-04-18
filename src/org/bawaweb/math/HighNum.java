@@ -68,6 +68,30 @@ public class HighNum {
 	public String getNumString() {
 		return this.numString;
 	}
+	/**
+	 * Will remove Leading zeroes
+	 * @param aStr	=	something like "00006.88" becomes
+	 * @return	"6.88"
+	 */
+	private String removeLeadingZeroes(final String aStr) {
+		String st = aStr;
+		if (aStr.startsWith(String.valueOf(ZERO))) {
+			
+			if (!aStr.startsWith(String.valueOf(ZERO)+String.valueOf(DOT))) {
+				int numZeroes = 0;
+				for (int i = 0; i < aStr.length(); i++) {
+					if (ZERO == st.charAt(i)) {
+						numZeroes += 1;
+					} else {
+						break;
+					}
+				}
+				st = st.substring(numZeroes);
+			}
+		}
+		
+		return st;
+	}
 	
 	/**
 	 * Returns a clean HighNum
@@ -78,6 +102,9 @@ public class HighNum {
 	 * @return
 	 */
 	private HighNum cleanup(final String aNum) {
+		if(this.isDebug)
+			System.out.println("In cleanup -- aNum == "+aNum);
+		
 		String astr = aNum;
 
 		if (astr.contains(new Character(DOT).toString())) {
@@ -86,16 +113,49 @@ public class HighNum {
 				// remove trailing zeroes
 				boolean done = false;
 				do {
-					astr = astr.substring(0,astr.length()-1);
+					astr = astr.substring(0, astr.length() - 1);
 					done = !astr.endsWith(String.valueOf(ZERO));
 				} while (!done);
 				
 				// remove last dot char
-				if(astr.endsWith(String.valueOf(DOT))){
-					astr = astr.substring(0,astr.length()-1);
+				if (astr.endsWith(String.valueOf(DOT))) {
+					astr = astr.substring(0, astr.length() - 1);
 				}
 			}
+			
+			astr = this.removeLeadingZeroes(astr);
+			
+			
+
+//			if (astr.startsWith(String.valueOf(ZERO))
+//					/*|| (astr.startsWith(String.valueOf(DASH) + String.valueOf(ZERO)))*/) {
+//
+//				int nxtChar = astr.startsWith(String.valueOf(DASH) + String.valueOf(ZERO)) ? 1 : 0;
+//				
+//				if (astr.charAt(nxtChar) == ZERO) {
+//					// remove leading zeroes
+//					
+//					boolean done = false;
+//					do {
+//						astr = astr.substring(nxtChar);
+//						done = !astr.startsWith(String.valueOf(ZERO));
+//						
+//					} while (!done);
+//					
+//					// remove last dot char
+//					if (astr.startsWith(String.valueOf(DOT))) {
+//						astr = astr.substring(0, astr.length() - 1);
+//					}
+//				}
+//
+//			}
+
+		} else {
+			
 		}
+		
+		if(this.isDebug)
+			System.out.println("returning cleaned == "+astr);
 		
 		return new HighNum(astr);
 	}
@@ -183,25 +243,26 @@ public class HighNum {
 
 				int valCMinus = amILarger ? this.getMinusCharMapping(s, l, carryOver)
 						: this.getMinusCharMapping(l, s, carryOver);
-				if (valCMinus > 10) {
-					carryOver = valCMinus % 10;
-					minusStack.push(valCMinus - 10);
+				
+				if (valCMinus >= 10) {
+					carryOver = valCMinus / 10;
+					minusStack.push(valCMinus % 10);
 				} else {
 					carryOver = 0;
 					minusStack.push(valCMinus);
 				}
 			}
 
-			/*if (carryOver != 0) {
+			if (carryOver != 0) {
 				minusStack.push(carryOver);
-			}*/
+			}
 			
 			if (this.isDebug) {
 				System.out.print("numMinusStack==");
 				this.printStack(minusStack);
 			}
 
-			numMinusStr = this.getNumSumStr(minusStack);
+			numMinusStr = this.getNumStckStr(minusStack);
 			if (this.isDebug) {
 				System.out.print("numMinusStr==>" + numMinusStr);
 			}
@@ -216,6 +277,69 @@ public class HighNum {
 
 		}
 		
+		if(this.isDebug){
+			System.out.println("StackSizes Different minus");
+			System.out.println("this.isGreaterThan(aNum)=amILarger==="+amILarger+" for this=="+this.getNumString()+" and aNum=="+aNum.getNumString());
+			
+		}
+
+		if (amILarger && myStack.size() > aStack.size()) {
+			Character s = null;
+			Character l = null;
+			System.out.println("HERRRR----this="+this.getNumString()+"  anum==="+aNum.getNumString());
+			int size = aStack.size();
+			for (int i = 0; i < size; i++) {
+				s = myStack.pop();
+				l = aStack.pop();
+
+				int valCMinus = this.getMinusCharMapping(s, l, carryOver);
+				
+				if (valCMinus >= 10) {
+					carryOver = valCMinus / 10;
+					minusStack.push(valCMinus % 10);
+				} else {
+					carryOver = 0;
+					minusStack.push(valCMinus);
+				}
+			}
+
+			/*if (carryOver != 0) {
+				minusStack.push(carryOver);
+			}
+			*/
+			int diff = myStack.size() - aStack.size();
+			for (int i = 0; i < diff; i++) {
+				System.out.println("AAAAAArrrrrGGGGhhh11111==="+i);
+				minusStack.push(Character.getNumericValue(myStack.pop()));
+			}
+			
+			if (this.isDebug) {
+				System.out.println("numMinusStack22==");
+				this.printStack(minusStack);
+			}
+
+			numMinusStr = this.getNumStckStr(minusStack);
+			if (this.isDebug) {
+				System.out.println("numMinusStr22==>" + numMinusStr);
+			}
+			
+
+
+			return new HighNum(numMinusStr);
+		}
+
+		if (/* amILarger && */myStack.size() < aStack.size()) {
+			if(!this.isDebug)
+				System.out.println("MINU__D______StackOfMin<aStackSize amILarger && "+ amILarger);
+			
+			//do-switch
+			HighNum tempANum = aNum;
+			HighNum tempBNum = this;
+			System.out.println("tempANum.minus(this).getNumString()===="+tempANum.minus(this).getNumString());
+			return new HighNum(String.valueOf(DASH)+tempANum.minus(this).getNumString());
+			
+		}
+		
 		return null;
 	}
 
@@ -225,11 +349,120 @@ public class HighNum {
 	}
 
 	private HighNum minusDecimals(HighNum aNum, HighNum bNum, int carryOver) {
-		// TODO Auto-generated method stub
-		return null;
+		HighNum majorANum = null;
+		HighNum majorBNum = null;
+		HighNum minorANum = null;
+		HighNum minorBNum = null;
+
+		Stack<Character> minorAStack = new Stack<Character>();
+		Stack<Character> minorBStack = new Stack<Character>();
+		
+		String majorAStr = "";
+		String majorBStr = "";
+		String minorAStr = "";
+		String minorBStr = "";
+				
+		if(aNum.isDecimal) {
+			final String aNumString = aNum.getNumString();
+			majorAStr = aNumString.substring(0,this.getDotPosition(aNumString));
+			minorAStr = aNumString.substring(this.getDotPosition(aNumString) + 1);
+
+			majorANum = new HighNum(majorAStr);
+			minorANum = new HighNum(minorAStr);
+		}
+		
+		if(bNum.isDecimal) {
+			final String bNumString = bNum.getNumString();
+			majorBStr = bNumString.substring(0,this.getDotPosition(bNumString));
+			minorBStr = bNumString.substring(this.getDotPosition(bNumString) + 1);
+
+			majorBNum = new HighNum(majorBStr);
+			minorBNum = new HighNum(minorBStr);
+		}
+		
+		if (!aNum.isDecimal && bNum.isDecimal) {
+			for (int i = 0; i < minorBStr.length(); i++) {
+				minorAStack.push(DOT);
+				minorAStr += ZERO;
+			}
+			
+			majorANum = aNum;
+			minorANum = new HighNum(minorAStr);
+		}
+		
+		if(!bNum.isDecimal && aNum.isDecimal) {
+			for(int i = 0; i < minorAStr.length(); i++) {
+				minorBStack.push(DOT);
+				minorBStr += ZERO;
+			}
+			
+			majorBNum = bNum;
+			minorBNum = new HighNum(minorBStr);
+		}
+		
+		if (minorBStr.length() > minorAStr.length()) {
+			int diff = minorBStr.length()-minorAStr.length();
+			for(int i = 0; i < diff; i++){
+				minorAStr += ZERO;
+			}
+			
+			minorANum = new HighNum(minorAStr);
+		}
+		
+		if (minorAStr.length() > minorBStr.length()) {
+			int diff = minorAStr.length()-minorBStr.length();
+			for(int i = 0; i < diff; i++){
+				minorBStr += ZERO;
+			}
+			
+			minorBNum = new HighNum(minorBStr);
+		}
+		
+		if (this.isDebug) {
+			System.out.println("Minus\nminorsA&BEqlLength====" + (minorAStr.length() == minorBStr.length()));
+			System.out.println("minorAStr == " + minorAStr);
+			System.out.println("minorBStr == " + minorBStr);
+			System.out.println("majorAStr == " + majorAStr);
+			System.out.println("majorBStr == " + majorBStr);
+		}
+		
+		final boolean minorAgreaterThanB = minorANum.isGreaterThan(minorBNum);
+		minorANum = minorAgreaterThanB ? minorANum : new HighNum("1".concat(minorANum.getNumString()));
+
+		HighNum minorMinusVal = minorANum.minus(minorBNum, 0);
+		minorMinusVal = !minorAgreaterThanB ? new HighNum(minorMinusVal.getNumString().substring(1)) : minorMinusVal;
+		final String minorMinusValStr = minorMinusVal.getNumString();
+
+		if (this.isDebug) {
+			System.out.println("1************minorMinusValStr == " + minorMinusValStr);
+			System.out.println("11here carry==="+carryOver);	
+		}	
+		
+		if (minorMinusValStr.length() > minorAStr.length()) {
+			System.out.println("INIF1232");
+			carryOver = Integer.parseInt(minorMinusValStr.substring(0, minorMinusValStr.length() - minorAStr.length()));
+			String newMinSumStr = minorMinusValStr.substring(minorMinusValStr.length() - minorAStr.length());
+			minorMinusVal = new HighNum(newMinSumStr);
+		}
+		
+		if(!minorAgreaterThanB){carryOver+=1;}
+		//System.out.println("here carry2==="+carryOver);
+
+		HighNum majorMinusVal = majorANum.minus(majorBNum, carryOver);
+		if (!minorAgreaterThanB) {
+			majorMinusVal = new HighNum(majorMinusVal.getNumString().substring(1));
+		}
+		if (this.isDebug) {
+			System.out.println("2************majorMinusVal == " + majorMinusVal.getNumString());
+		}
+		
+		//return new HighNum(this.cleanup(majorMinusVal.getNumString()).getNumString() + DOT + this.cleanup(minorMinusVal.getNumString()).getNumString());
+		
+		return this.cleanup(majorMinusVal.getNumString() + DOT + minorMinusVal.getNumString());
+
 	}
 
-	private int /*minus*/getMinusCharMapping(final char a, final char b, final int carry) {
+	private int getMinusCharMapping(final char a, final char b, final int carry) {
 		int diff = 0;
 		int lftVal = Character.getNumericValue(a);
 		int rhtVal = Character.getNumericValue(b) + carry;
@@ -580,7 +813,7 @@ public class HighNum {
 			this.printStack(sumStack);
 		}
 
-		numSumStr = this.getNumSumStr(sumStack);
+		numSumStr = this.getNumStckStr(sumStack);
 		if (this.isDebug) {
 			System.out.println("numSumStr===>>" + numSumStr);
 		}
@@ -785,9 +1018,9 @@ public class HighNum {
 		System.out.println( ss );
 	}
 
-	private String getNumSumStr(final Stack<Integer> sStack) {
+	private String getNumStckStr(final Stack<Integer> sStack) {
 		if (this.isDebug) {
-			System.out.println("In getNumSumStr");
+			System.out.println("In getNumStckStr");
 			this.printStack(sStack);
 		}
 		final Stack<Integer> aStack = (Stack<Integer>) sStack.clone();
