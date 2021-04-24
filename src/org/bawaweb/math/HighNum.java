@@ -65,6 +65,11 @@ public class HighNum {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "HighNum [numString=" + this.numString + "]";
+	}
+
 	public String getNumString() {
 		return this.numString;
 	}
@@ -286,7 +291,7 @@ public class HighNum {
 		if (amILarger && myStack.size() > aStack.size()) {
 			Character s = null;
 			Character l = null;
-			System.out.println("HERRRR----this="+this.getNumString()+"  anum==="+aNum.getNumString());
+			//System.out.println("HERRRR----this="+this.getNumString()+"  anum==="+aNum.getNumString());
 			int size = aStack.size();
 			for (int i = 0; i < size; i++) {
 				s = myStack.pop();
@@ -309,7 +314,7 @@ public class HighNum {
 			*/
 			int diff = myStack.size() - aStack.size();
 			for (int i = 0; i < diff; i++) {
-				System.out.println("AAAAAArrrrrGGGGhhh11111==="+i);
+				//System.out.println("AAAAAArrrrrGGGGhhh11111==="+i);
 				minusStack.push(Character.getNumericValue(myStack.pop()));
 			}
 			
@@ -329,14 +334,14 @@ public class HighNum {
 		}
 
 		if (/* amILarger && */myStack.size() < aStack.size()) {
-			if(!this.isDebug)
-				System.out.println("MINU__D______StackOfMin<aStackSize amILarger && "+ amILarger);
+			if(this.isDebug)
+				System.out.println("MINU__D______StackOfMin<aStackSize amILarger is "+ amILarger/*=false*/);
 			
 			//do-switch
 			HighNum tempANum = aNum;
 			HighNum tempBNum = this;
-			System.out.println("tempANum.minus(this).getNumString()===="+tempANum.minus(this).getNumString());
-			return new HighNum(String.valueOf(DASH)+tempANum.minus(this).getNumString());
+			//System.out.println("tempANum.minus(this).getNumString()===="+tempANum.minus(this).getNumString());
+			return new HighNum(String.valueOf(DASH) + tempANum.minus(this).getNumString());
 			
 		}
 		
@@ -476,6 +481,12 @@ public class HighNum {
 		return diff = ((lftVal + 10) - rhtVal) + 10;
 	}
 	
+
+
+	public boolean isGreaterThanOrEqualTo(HighNum aNum) {
+		return (this.isGreaterThan(aNum) || this.equals(aNum));
+	}
+	
 	/**
 	 * Returns true if 'this' is greater than aNum
 	 * @param aNum	-	the HighNum to test
@@ -483,6 +494,9 @@ public class HighNum {
 	 * 			false	- otherwise
 	 */
 	public boolean isGreaterThan(final HighNum aNum) {
+		if (aNum == null || this.equals(aNum)) {
+			return false;
+		}
 		boolean isGreater = false;
 		boolean amINegative = this.isNegative;
 		boolean isANumNegative = aNum.isNegative;
@@ -819,6 +833,71 @@ public class HighNum {
 		}
 
 		return new HighNum(numSumStr);
+	}
+	
+	/**
+	 * 
+	 * @param aNum - the Divisor for this [the dividend]
+	 * @return	integer result / quotient of "this / dividedBy aNum"
+	 */
+	public HighNum dividedBy(final HighNum aNum) {
+		HighNum tempNum = this;
+		HighNum bNum = aNum;
+		
+		HighNum diffNum;		
+		HighNum divVal = null;
+		final HighNum zeroNum = new HighNum("0");
+		final HighNum oneNum = new HighNum("1");
+
+		if (tempNum.isGreaterThan(bNum)) {
+
+			if (this.isDebug)
+				System.out.println("Here tempNum.isGreaterThan(bNum) bNum== "+bNum );			
+			boolean done = false;
+			int i = 1;
+			while (!done) {
+				
+//System.out.println("b4  In !done bNum====> "+bNum+" and i = "+i);				
+				bNum = bNum.plus(aNum);
+				boolean d = tempNum.isGreaterThanOrEqualTo(bNum);
+				if (!d) {
+					done = true;
+					break;
+				}
+//System.out.println("aftr  In !done bNum====> "+bNum+" and i = "+i);	
+				
+//				diffNum = tempNum.minus(bNum);
+//				tempNum = tempNum.minus(bNum);
+				i = i + 1;
+			}
+			if (this.isDebug)
+				System.out.println("ENDed   i= "+i+" bNum---"+bNum);
+			
+			return divVal = new HighNum(String.valueOf(i));
+		}
+		
+		
+		/*
+		if (tNum.isGreaterThan(bNum)) {
+
+			diffNum = tNum.minus(bNum);
+			int i = 0;
+
+			while (!diffNum.isNegativeGreaterThan(zeroNum)) {
+				tNum = tNum.minus(bNum);
+				diffNum = tNum.minus(bNum);
+
+				i = i + 1;
+				if (i<=10||i == 10000 || i == 100000 || i == 200000||i==239717)
+					System.out.println("i===> " + i+ "  diffNum == "+diffNum+ "  tNum == "+tNum);
+				
+				if(i>239717)break;
+			}
+			
+			return divVal = new HighNum(String.valueOf(i));
+		}
+		*/
+		return divVal;
 	}
 
 	private HighNum multiplyDecimals(HighNum aNum, HighNum bNum, int carryOver/* = 0*/) {
@@ -1194,12 +1273,12 @@ public class HighNum {
 			left = new HighNum("107");
 			right = new HighNum("89");
 			
-			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" -=> "+ left.minus(right));
+			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" ===> "+ left.minus(right));
 
 			left = new HighNum("545.8574");
 			right = new HighNum("187.6509");
 			
-			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" -=> "+ left.minus(right));
+			System.out.println(left.getNumString()+" Minus " +right.getNumString()+" ===> "+ left.minus(right).getNumString());
 
 			
 			

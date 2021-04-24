@@ -1,7 +1,5 @@
 package org.bawaweb.math;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -87,12 +85,26 @@ public class HighNumTest {
 		bNum = new HighNum(b);
 		assert (aNum.isGreaterThan(bNum));
 
-		
+
 		a = "5574";
 		b = "5509";
 		aNum = new HighNum(a);
 		bNum = new HighNum(b);
 		assert (aNum.isGreaterThan(bNum));
+		
+		
+		a = "5574";
+		b = "5574";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.isGreaterThanOrEqualTo(bNum));
+		
+
+		a = "5574";
+		b = "5509";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.isGreaterThanOrEqualTo(bNum));
 		
 		
 		
@@ -339,6 +351,46 @@ public class HighNumTest {
 		b = "54";
 		bNum = new HighNum(b);
 		assert (aNum.times(bNum).equals(new HighNum("666666666")));
+		
+
+		b = "63";
+		bNum = new HighNum(b);
+		assert (aNum.times(bNum).equals(new HighNum("777777777")));
+	}
+	
+	@Test
+	public void testDividedBy() {
+		String a = "85";
+		String b = "17";
+		
+		HighNum aNum = new HighNum(a);
+		HighNum bNum = new HighNum(b);		
+//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+		assert( aNum.dividedBy( bNum ).getNumString().equals("5") );
+		
+		
+		a = "8876";
+		b = "2212";
+		
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);		
+//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+		assert( aNum.dividedBy( bNum ).getNumString().equals("4") );
+		
+		a = "15455541545";
+		b = "64474";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("239717")) );
+		
+
+		a = "285";
+		b = "19";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("15")) );
 	}
 
 }
