@@ -258,6 +258,9 @@ public class HighNum {
 				}
 			}
 
+			if(this.isDebug)
+				System.out.println("[minus22]carryOver==="+carryOver+"====this="+this+"---aNum=="+aNum);
+			
 			if (carryOver != 0) {
 				minusStack.push(carryOver);
 			}
@@ -268,8 +271,8 @@ public class HighNum {
 			}
 
 			numMinusStr = this.getNumStckStr(minusStack);
-			if (this.isDebug) {
-				System.out.print("numMinusStr==>" + numMinusStr);
+			if (!this.isDebug) {
+				System.out.println("[this]--"+this+"____numMinusStr==>" + numMinusStr);
 			}
 
 			if (!amILarger) {
@@ -835,6 +838,32 @@ public class HighNum {
 		return new HighNum(numSumStr);
 	}
 	
+
+
+	public HighNum longDividedBy(HighNum aNum) {
+		if (!aNum.isDecimal) {
+			return new HighNum(this.longDivision(this.getNumString(), aNum.getInteger()));
+		}
+		
+		
+		
+		return new HighNum(this.longDivision(String.valueOf(this.getMajorInteger()), aNum.getMajorInteger()));
+	}
+	
+	private int getMajorInteger() {
+		if (this.isDecimal) {
+			final String aNumString = this.getNumString();
+			String majorAStr = aNumString.substring(0,this.getDotPosition(aNumString));
+			return Integer.parseInt(majorAStr);
+			
+		}
+		return 0;
+	}
+
+	private int getInteger() {
+		return Integer.parseInt(this.numString);
+	}
+
 	/**
 	 * 
 	 * @param aNum - the Divisor for this [the dividend]
@@ -848,6 +877,7 @@ public class HighNum {
 		HighNum divVal = null;
 		final HighNum zeroNum = new HighNum("0");
 		final HighNum oneNum = new HighNum("1");
+		final HighNum tenNum = new HighNum("10");
 
 		if (tempNum.isGreaterThan(bNum)) {
 
@@ -857,23 +887,51 @@ public class HighNum {
 			int i = 1;
 			while (!done) {
 				
-//System.out.println("b4  In !done bNum====> "+bNum+" and i = "+i);				
+System.out.println("--1--b4  In !done bNum====> "+bNum+" and i = "+i);				
 				bNum = bNum.plus(aNum);
 				boolean d = tempNum.isGreaterThanOrEqualTo(bNum);
 				if (!d) {
 					done = true;
 					break;
 				}
-//System.out.println("aftr  In !done bNum====> "+bNum+" and i = "+i);	
+				i = i + 1;
+System.out.println("==2==aftr  In !done bNum====> "+bNum+" and i = "+i);	
 				
 //				diffNum = tempNum.minus(bNum);
 //				tempNum = tempNum.minus(bNum);
-				i = i + 1;
 			}
-			if (this.isDebug)
-				System.out.println("ENDed   i= "+i+" bNum---"+bNum);
+			if (!this.isDebug)
+				System.out.println("ENDed   i= "+i+" bNum---"+bNum+"tempNum===> "+tempNum);
+
 			
-			return divVal = new HighNum(String.valueOf(i));
+			
+			final int minrLimit = 1000;
+			String quotientStr = String.valueOf(i) + DOT;
+			if(!this.isDebug)
+				System.out.println("tempNum===> "+tempNum+" bNum ==>"+bNum);
+			
+			diffNum = bNum.minus(tempNum);
+			
+			if (!this.isDebug) {
+				System.out.println("diffNum===> " + diffNum);
+				System.out.println("quotientStr = " + quotientStr);
+			}
+			/*boolean solved = false;
+			int cnt = 0;
+			while (!solved && cnt <= minrLimit) {
+				diffNum = diffNum.times(tenNum);
+
+				if (diffNum.isNegative || diffNum.equals(zeroNum)) {
+					solved = true;
+				}
+				
+				bNum = bNum.plus(aNum);
+				
+				cnt += 1;
+			}*/
+
+			return new HighNum(quotientStr);
+			//return divVal = new HighNum(String.valueOf(i));
 		}
 		
 		
@@ -1309,6 +1367,65 @@ public class HighNum {
 		
 
 	}
+	
+	//gfg	https://www.geeksforgeeks.org/divide-large-number-represented-string/
+	//	doing integer-result division only
+	public String longDivision(String number, int divisor) {
+
+		// As result can be very 
+		// large store it in string 
+		// but since we need to modify 
+		// it very often so using 
+		// string builder 
+		StringBuilder result 
+				= new StringBuilder(); 
+       
+		// We will be iterating 
+		// the dividend so converting 
+		// it to char array 
+		char[] dividend 
+		= number.toCharArray(); 
+
+		// Initially the carry 
+		// would be zero 
+		int carry = 0; 
+
+		// Iterate the dividend 
+		for ( 
+				int i = 0; 
+				i < dividend.length; i++) { 
+			// Prepare the number to 
+			// be divided 
+			int x 
+			= carry * 10 
+			+ Character.getNumericValue( 
+					dividend[i]); 
+
+			// Append the result with 
+			// partial quotient 
+			result.append(x / divisor); 
+
+			// Prepare the carry for  
+			// the next Iteration 
+			carry = x % divisor;
+
+		}
+
+		// Remove any leading zeros
+		for (
+				int i = 0;
+				i < result.length(); i++) {
+			if (
+					result.charAt(i) != '0') {
+				// Return the result
+				return result.substring(i);
+			}
+		}
+		// Return empty string
+		// if number is empty
+		return "";
+	}
+      
 
 }
 /* * 

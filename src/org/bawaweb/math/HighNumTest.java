@@ -194,8 +194,26 @@ public class HighNumTest {
 		b = "8876";
 		aNum = new HighNum(a);
 		bNum = new HighNum(b);
-		assert (aNum.minus(bNum).getNumString().equals("-6662"));
-		
+		assert (aNum.minus(bNum).getNumString().equals("-6662"));		
+
+		a = "189.7";
+		b = "178.154";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).equals(new HighNum("11.546")));
+
+		a = "178.154";
+		b = "170.73";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		assert (aNum.minus(bNum).equals(new HighNum("7.424")));
+
+		a = "102";
+		b = "85";
+		aNum = new HighNum(a);
+		bNum = new HighNum(b);
+		//System.out.println("102.minus85==="+aNum.minus(bNum));
+		assert (aNum.minus(bNum).equals(new HighNum("17")));
 		
 	}
 
@@ -365,7 +383,7 @@ public class HighNumTest {
 		
 		HighNum aNum = new HighNum(a);
 		HighNum bNum = new HighNum(b);		
-//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
 		assert( aNum.dividedBy( bNum ).getNumString().equals("5") );
 		
 		
@@ -393,4 +411,39 @@ public class HighNumTest {
 		assert (aNum.dividedBy( bNum ).equals( new HighNum("15")) );
 	}
 
+	@Test
+	public void testLongDivBy() {
+		String aStr = "500";
+		String bStr = "4";
+		HighNum aNum = new HighNum(aStr);
+		HighNum bNum = new HighNum(bStr);
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("125")) );
+		
+		aStr = "1260257";
+		bStr = "37";
+		aNum = new HighNum(aStr);
+		bNum = new HighNum(bStr);
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("34061")) );		
+		assert (aNum.longDividedBy( bNum ).equals( new HighNum("34061")) );
+
+		aStr = "152296";
+		bStr = "853";
+		aNum = new HighNum(aStr);
+		bNum = new HighNum(bStr);
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("178"/*.54161781946072684642438452521*/)) );
+		
+		assert (aNum.longDividedBy( bNum ).equals( new HighNum("178"/*.54161781946072684642438452521*/)) );
+
+		aStr = "178.154";
+		bStr = "18.97";
+		aNum = new HighNum(aStr);
+		bNum = new HighNum(bStr);
+//		System.out.println("aNum.dividedBy( bNum )===="+aNum.dividedBy( bNum ).getNumString());
+
+//		System.out.println("aNum.longDividedBy( bNum )===="+aNum.longDividedBy( bNum ).getNumString());
+		assert (aNum.dividedBy( bNum ).equals( new HighNum("9"/*.3913547706905640484976278334212*/)) );
+		
+		assert (aNum.longDividedBy( bNum ).equals( new HighNum("9"/*.3913547706905640484976278334212*/)) );
+	}
+	
 }
